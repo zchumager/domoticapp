@@ -13,9 +13,10 @@ import java.util.Collections;
 import java.util.List;
 
 public class Network {
-    public final static String API_SERVER_URL = "http://192.168.1.3:5000";
     public final static int RETRY_TIMES = 3;
     public final static int RETRY_MILLISECONDS_TIME = 10000;
+
+    public static String API_SERVER_URL = "http://raspberrypi.local:5000/";
 
     public static String getDeviceName(Context context) {
         return Settings.Global.getString(context.getContentResolver(), Settings.Global.DEVICE_NAME);
