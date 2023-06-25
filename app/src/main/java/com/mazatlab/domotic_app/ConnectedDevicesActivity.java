@@ -46,10 +46,11 @@ public class ConnectedDevicesActivity extends AppCompatActivity {
         connectedDevicesList = findViewById(R.id.connectedDevicesList);
         connectedDevicesList.setAdapter(adapter);
 
+        String apiServerUrl = Network.getApiServerUrl(getApplicationContext());
         String partialMac = Network.getHostAddress(getApplicationContext());
         loginPayload = new LoginPayload(partialMac);
 
-        loginService = Client.getClient().create(Service.class);
+        loginService = Client.getClient(apiServerUrl).create(Service.class);
         Call<LoginResponse> loginCall = loginService.postLogin(loginPayload);
 
         loginCall.enqueue(new Callback<LoginResponse>() {
@@ -59,10 +60,14 @@ public class ConnectedDevicesActivity extends AppCompatActivity {
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if(response.code() == 200) {
 
+                    String apiServerUrl = Network.getApiServerUrl(getApplicationContext());
                     String accessToken = response.body().accessToken;
 
-                    jwtService = Client.getClient(
-                            accessToken, Network.RETRY_TIMES, Network.RETRY_TIMES).create(Service.class);
+                    jwtService = Client.getClient(apiServerUrl,
+                                    accessToken,
+                                    Network.RETRY_TIMES,
+                                    Network.RETRY_TIMES)
+                            .create(Service.class);
 
                     Call<ArrayList<String>> connectedDevicesCall = jwtService.getConnectedDevices();
                     connectedDevicesCall.enqueue(new Callback<ArrayList<String>>() {

@@ -25,9 +25,11 @@ MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        String apiServerUrl = Network.getApiServerUrl(getApplicationContext());
         String partialMac = Network.getHostAddress(getApplicationContext());
+
         loginPayload = new LoginPayload(partialMac);
-        loginService = Client.getClient().create(Service.class);
+        loginService = Client.getClient(apiServerUrl).create(Service.class);
 
         Call<LoginResponse> loginCall = loginService.postLogin(loginPayload);
         loginCall.enqueue(new Callback<LoginResponse>() {

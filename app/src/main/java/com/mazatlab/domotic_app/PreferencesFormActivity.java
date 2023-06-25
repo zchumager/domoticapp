@@ -92,8 +92,8 @@ public class PreferencesFormActivity
             partialMac = extras.getString("partialMac");
 
             if (partialMac != null) {
-
-                Service service = Client.getClient().create(Service.class);
+                String apiServerUrl = Network.getApiServerUrl(getApplicationContext());
+                Service service = Client.getClient(apiServerUrl).create(Service.class);
                 Call<DeviceInfoResponse> deviceInfoCall = service.getDeviceInfo(partialMac);
 
                 // Getting Device's Information
@@ -184,8 +184,8 @@ public class PreferencesFormActivity
     //********** REQUESTS **************************************************************************
 
     protected void join2HomeRequest(FormJson payload) {
-
-        Service service = Client.getClient().create(Service.class);
+        String apiServerUrl = Network.getApiServerUrl(getApplicationContext());
+        Service service = Client.getClient(apiServerUrl).create(Service.class);
         Call<FormJson> join2HomeCall = service.postJoin2Home(payload);
         join2HomeCall.enqueue(new Callback<FormJson>() {
             @Override
@@ -239,7 +239,8 @@ public class PreferencesFormActivity
 
         LoginPayload loginPayload = new LoginPayload(partialMac);
 
-        Service service = Client.getClient().create(Service.class);
+        String apiServerUrl = Network.getApiServerUrl(getApplicationContext());
+        Service service = Client.getClient(apiServerUrl).create(Service.class);
         Call<LoginResponse> loginResponseCall = service.postLogin(loginPayload);
         loginResponseCall.enqueue(new Callback<LoginResponse>() {
             @Override
@@ -247,11 +248,13 @@ public class PreferencesFormActivity
 
                 if (response.code() == 200) {
 
+                    String apiServerUrl = Network.getApiServerUrl(getApplicationContext());
                     String accessToken = response.body().accessToken;
 
-                    Service jwtService = Client.getClient(
-                                    accessToken, Network.RETRY_TIMES, Network.RETRY_MILLISECONDS_TIME)
-                            .create(Service.class);
+                    Service jwtService = Client.getClient(apiServerUrl,
+                                    accessToken,
+                                    Network.RETRY_TIMES,
+                                    Network.RETRY_MILLISECONDS_TIME).create(Service.class);
 
                     Call<FormJson> updateCall = jwtService.putUpdatePreferences(payload);
                     updateCall.enqueue(new Callback<FormJson>() {

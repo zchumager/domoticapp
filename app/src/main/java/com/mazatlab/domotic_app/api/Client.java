@@ -15,7 +15,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Client {
-    public static Retrofit getClient() {
+    public static Retrofit getClient(String url) {
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
 
@@ -24,7 +24,7 @@ public class Client {
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Network.API_SERVER_URL)
+                .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
@@ -32,7 +32,7 @@ public class Client {
         return retrofit;
     }
 
-    public static Retrofit getClient(String accessToken, int retryTimes, int retryMillisecondsTime) {
+    public static Retrofit getClient(String url, String accessToken, int retryTimes, int retryMillisecondsTime) {
         AccessTokenInterceptor interceptor = new AccessTokenInterceptor(accessToken);
 
         // It add the retry logic
@@ -55,7 +55,7 @@ public class Client {
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Network.API_SERVER_URL)
+                .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();

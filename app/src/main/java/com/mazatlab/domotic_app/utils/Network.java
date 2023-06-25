@@ -1,8 +1,12 @@
 package com.mazatlab.domotic_app.utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.provider.Settings;
+
+import com.mazatlab.domotic_app.MainActivity;
+import com.mazatlab.domotic_app.R;
 
 import java.math.BigInteger;
 import java.net.InetAddress;
@@ -15,8 +19,6 @@ import java.util.List;
 public class Network {
     public final static int RETRY_TIMES = 3;
     public final static int RETRY_MILLISECONDS_TIME = 10000;
-
-    public static String API_SERVER_URL = "http://raspberrypi.local:5000/";
 
     public static String getDeviceName(Context context) {
         return Settings.Global.getString(context.getContentResolver(), Settings.Global.DEVICE_NAME);
@@ -43,6 +45,14 @@ public class Network {
         }
 
         return "127.0.0.1";
+    }
+
+    public static String getApiServerUrl(Context context) {
+
+        SharedPreferences preferences = context.getSharedPreferences(
+                context.getString(R.string.preferences_file), Context.MODE_PRIVATE);
+
+        return preferences.getString("apiServerUrl", "http://raspberrypi.local:5000/");
     }
 
     private static String formatHostAddress(String hostAddress) {

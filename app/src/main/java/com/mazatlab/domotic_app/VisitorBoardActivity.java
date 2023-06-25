@@ -41,7 +41,8 @@ public class VisitorBoardActivity extends AppCompatActivity
         String partialMac = Network.getHostAddress(getApplicationContext());
         LoginPayload loginPayload = new LoginPayload(habitantPartialMac);
 
-        Service loginService = Client.getClient().create(Service.class);
+        String apiServerUrl = Network.getApiServerUrl(getApplicationContext());
+        Service loginService = Client.getClient(apiServerUrl).create(Service.class);
         Call<LoginResponse> loginCall = loginService.postLogin(loginPayload);
         loginCall.enqueue(new Callback<LoginResponse>() {
             @Override
@@ -49,8 +50,10 @@ public class VisitorBoardActivity extends AppCompatActivity
                 Service jwtService;
 
                 if (response.code() == 200) {
+                    String apiServerUrl = Network.getApiServerUrl(getApplicationContext());
                     String accessToken = response.body().accessToken;
-                    jwtService = Client.getClient(
+
+                    jwtService = Client.getClient(apiServerUrl,
                             accessToken,
                             Network.RETRY_TIMES,
                             Network.RETRY_MILLISECONDS_TIME).create(Service.class);
