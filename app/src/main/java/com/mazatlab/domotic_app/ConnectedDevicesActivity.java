@@ -69,7 +69,7 @@ public class ConnectedDevicesActivity extends AppCompatActivity {
                                     Network.RETRY_TIMES)
                             .create(Service.class);
 
-                    Call<ArrayList<String>> connectedDevicesCall = jwtService.getConnectedDevices();
+                    Call<ArrayList<String>> connectedDevicesCall = jwtService.getAllDevices();
                     connectedDevicesCall.enqueue(new Callback<ArrayList<String>>() {
                         @Override
                         public void onResponse(Call<ArrayList<String>> call, Response<ArrayList<String>> response) {

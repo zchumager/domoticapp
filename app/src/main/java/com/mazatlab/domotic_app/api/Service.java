@@ -37,7 +37,7 @@ public interface Service {
     @PUT("/update_preferences")
     Call<FormJson> putUpdatePreferences(@Body FormJson body);
 
-    @GET("/connected_devices")
-    Call<ArrayList<String>> getConnectedDevices();
+    @GET("/all_devices")
+    Call<ArrayList<String>> getAllDevices();
 
 }
