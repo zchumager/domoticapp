@@ -33,6 +33,8 @@ public class ConnectedDevicesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connected_devices);
 
+        Bundle bundle = getIntent().getExtras();
+
         devices = new ArrayList<>(
                 Arrays.asList("Cargando ...")
         );
@@ -69,7 +71,14 @@ public class ConnectedDevicesActivity extends AppCompatActivity {
                                     Network.RETRY_TIMES)
                             .create(Service.class);
 
-                    Call<ArrayList<String>> connectedDevicesCall = jwtService.getAllDevices();
+                    Call<ArrayList<String>> connectedDevicesCall;
+
+                    if(bundle.getBoolean("registered")) {
+                        connectedDevicesCall = jwtService.getRegistered_devices();
+                    } else {
+                        connectedDevicesCall = jwtService.getAllDevices();
+                    }
+
                     connectedDevicesCall.enqueue(new Callback<ArrayList<String>>() {
                         @Override
                         public void onResponse(Call<ArrayList<String>> call, Response<ArrayList<String>> response) {

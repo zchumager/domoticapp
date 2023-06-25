@@ -40,16 +40,26 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
+        Intent connectedDevices = new Intent(getApplicationContext(), ConnectedDevicesActivity.class);
 
         if(v.getId() == R.id.connectedDevicesBtn) {
             Toast.makeText(this, "Escaneando la red", Toast.LENGTH_SHORT).show();
 
-            Intent connectedDevices = new Intent(getApplicationContext(), ConnectedDevicesActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("registered", false);
+            connectedDevices.putExtras(bundle);
+
             startActivity(connectedDevices);
         }
 
         if(v.getId() == R.id.connectedUsersBtn) {
             Toast.makeText(this, "Connected Users", Toast.LENGTH_SHORT).show();
+
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("registered", true);
+            connectedDevices.putExtras(bundle);
+
+            startActivity(connectedDevices);
         }
     }
 }
