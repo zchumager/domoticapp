@@ -74,7 +74,7 @@ public class ConnectedDevicesActivity extends AppCompatActivity {
                     Call<ArrayList<String>> connectedDevicesCall;
 
                     if(bundle.getBoolean("registered")) {
-                        connectedDevicesCall = jwtService.getRegistered_devices();
+                        connectedDevicesCall = jwtService.getRegisteredConnected();
                     } else {
                         connectedDevicesCall = jwtService.getAllDevices();
                     }

@@ -40,6 +40,6 @@ public interface Service {
     @GET("/all_devices")
     Call<ArrayList<String>> getAllDevices();
 
-    @GET("/registered_devices")
-    Call<ArrayList<String>> getRegistered_devices();
+    @GET("/registered_connected")
+    Call<ArrayList<String>> getRegisteredConnected();
 }
