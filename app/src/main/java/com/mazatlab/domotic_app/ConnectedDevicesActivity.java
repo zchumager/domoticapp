@@ -68,7 +68,7 @@ public class ConnectedDevicesActivity extends AppCompatActivity {
                     jwtService = Client.getClient(apiServerUrl,
                                     accessToken,
                                     Network.RETRY_TIMES,
-                                    Network.RETRY_TIMES)
+                                    Network.RETRY_MILLISECONDS_TIME)
                             .create(Service.class);
 
                     Call<ArrayList<String>> connectedDevicesCall;
