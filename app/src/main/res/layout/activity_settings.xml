@@ -42,12 +42,18 @@
                 android:layout_marginTop="30dp"
                 android:text="Usuarios Conectados" />
 
+            <Switch
+                android:id="@+id/cronjobActivationSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="45dp"
+                android:textSize="20sp" />
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_marginTop="100dp"
-                android:src="@drawable/network"/>
-
+                android:src="@drawable/network" />
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

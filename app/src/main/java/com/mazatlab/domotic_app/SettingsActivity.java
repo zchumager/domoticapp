@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.mazatlab.domotic_app.api.Client;
@@ -14,6 +16,7 @@ import com.mazatlab.domotic_app.api.json.login.LoginPayload;
 import com.mazatlab.domotic_app.api.json.login.LoginResponse;
 import com.mazatlab.domotic_app.utils.Network;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,10 +24,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
+public class SettingsActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     Button connectedDevicesBtn;
     Button connectedUsersBtn;
+    Switch cronjobActivationSwitch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
         connectedUsersBtn = findViewById(R.id.connectedUsersBtn);
         connectedUsersBtn.setOnClickListener(this);
+
+        cronjobActivationSwitch = findViewById(R.id.cronjobActivationSwitch);
+        cronjobActivationSwitch.setOnCheckedChangeListener(this);
     }
 
     @Override
@@ -60,6 +67,17 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             connectedDevices.putExtras(bundle);
 
             startActivity(connectedDevices);
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+            Toast.makeText(this, "ON", Toast.LENGTH_SHORT).show();
+            buttonView.setText("Cronjob activado");
+        } else {
+            Toast.makeText(this, "OFF", Toast.LENGTH_SHORT).show();
+            buttonView.setText("Cronjob Desactivado");
         }
     }
 }
