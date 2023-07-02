@@ -50,7 +50,6 @@ public class VisitorBoardActivity extends AppCompatActivity
                 Service jwtService;
 
                 if (response.code() == 200) {
-                    String apiServerUrl = Network.getApiServerUrl(getApplicationContext());
                     String accessToken = response.body().accessToken;
 
                     jwtService = Client.getClient(apiServerUrl,

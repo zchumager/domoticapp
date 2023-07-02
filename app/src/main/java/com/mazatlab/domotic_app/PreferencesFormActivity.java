@@ -247,8 +247,6 @@ public class PreferencesFormActivity
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
 
                 if (response.code() == 200) {
-
-                    String apiServerUrl = Network.getApiServerUrl(getApplicationContext());
                     String accessToken = response.body().accessToken;
 
                     Service jwtService = Client.getClient(apiServerUrl,

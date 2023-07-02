@@ -61,8 +61,6 @@ public class ConnectedDevicesActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if(response.code() == 200) {
-
-                    String apiServerUrl = Network.getApiServerUrl(getApplicationContext());
                     String accessToken = response.body().accessToken;
 
                     jwtService = Client.getClient(apiServerUrl,

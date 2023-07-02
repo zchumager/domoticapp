@@ -42,4 +42,10 @@ public interface Service {
 
     @GET("/registered_connected")
     Call<ArrayList<String>> getRegisteredConnected();
+
+    @GET("/crontab")
+    Call<String> getCrontab();
+
+    @GET("/quitcron")
+    Call<String> quitCron();
 }

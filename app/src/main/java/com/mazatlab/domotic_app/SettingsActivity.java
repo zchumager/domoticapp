@@ -29,6 +29,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     Button connectedDevicesBtn;
     Button connectedUsersBtn;
     Switch cronjobActivationSwitch;
+    String switchLabelText;
+
+    Service loginService;
+    LoginPayload loginPayload;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
         cronjobActivationSwitch = findViewById(R.id.cronjobActivationSwitch);
         cronjobActivationSwitch.setOnCheckedChangeListener(this);
+
+        String switchLabelText = cronjobActivationSwitch.isChecked()?"Cronjob Activado": "Cronjob Desactivado";
+        cronjobActivationSwitch.setText(switchLabelText);
     }
 
     @Override
@@ -72,12 +79,65 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if (isChecked) {
-            Toast.makeText(this, "ON", Toast.LENGTH_SHORT).show();
-            buttonView.setText("Cronjob activado");
-        } else {
-            Toast.makeText(this, "OFF", Toast.LENGTH_SHORT).show();
-            buttonView.setText("Cronjob Desactivado");
-        }
+        cronjobActivationSwitch.setEnabled(false);
+        switchLabelText = isChecked? "Activando cronjob": "Desactivando cronjob";
+        cronjobActivationSwitch.setText(switchLabelText);
+
+        String apiServerUrl = Network.getApiServerUrl(getApplicationContext());
+        String partialMac = Network.getHostAddress(getApplicationContext());
+        loginPayload = new LoginPayload(partialMac);
+
+        loginService = Client.getClient(apiServerUrl).create(Service.class);
+        Call<LoginResponse> loginCall = loginService.postLogin(loginPayload);
+
+        loginCall.enqueue(new Callback<LoginResponse>() {
+            Service jwtService;
+
+            @Override
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                if(response.code() == 200) {
+                    String accessToken = response.body().accessToken;
+
+                    jwtService = Client.getClient(apiServerUrl,
+                                    accessToken,
+                                    Network.RETRY_TIMES,
+                                    Network.RETRY_MILLISECONDS_TIME)
+                            .create(Service.class);
+
+                    Call<String> cronjobCall;
+
+                    if (isChecked) {
+                        cronjobCall = jwtService.getCrontab();
+                    } else {
+                        cronjobCall = jwtService.quitCron();
+                    }
+
+                    cronjobCall.enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            switchLabelText =  buttonView.isChecked()? "Activando cronjob": "Desactivando cronjob";
+                            buttonView.setText(switchLabelText);
+                            buttonView.setEnabled(true);
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+                            Toast.makeText(SettingsActivity.this,
+                                    "El cronjob no pudo ser activado",
+                                    Toast.LENGTH_SHORT).show();
+
+                            buttonView.setText("Cronjob Desactivado");
+                            buttonView.setChecked(false);
+                            buttonView.setEnabled(true);
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                buttonView.setEnabled(true);
+            }
+        });
     }
 }
