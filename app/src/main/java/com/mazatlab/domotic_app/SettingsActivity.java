@@ -48,6 +48,23 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         cronjobActivationSwitch = findViewById(R.id.cronjobActivationSwitch);
         cronjobActivationSwitch.setOnCheckedChangeListener(this);
 
+        Service service = Client.getClient(
+                Network.getApiServerUrl(getApplicationContext())).create(Service.class);
+
+
+        Call<String> getCrontab = service.getCronjob();
+        getCrontab.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(response.code() == 200) {
+                    cronjobActivationSwitch.setChecked(response.body().charAt(0) != '#');
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {}
+        });
+
         String switchLabelText = cronjobActivationSwitch.isChecked()?"Cronjob Activado": "Cronjob Desactivado";
         cronjobActivationSwitch.setText(switchLabelText);
     }
@@ -80,8 +97,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         cronjobActivationSwitch.setEnabled(false);
-        switchLabelText = isChecked? "Activando cronjob": "Desactivando cronjob";
-        cronjobActivationSwitch.setText(switchLabelText);
+        cronjobActivationSwitch.setText("Cargando...");
 
         String apiServerUrl = Network.getApiServerUrl(getApplicationContext());
         String partialMac = Network.getHostAddress(getApplicationContext());
@@ -115,7 +131,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                     cronjobCall.enqueue(new Callback<String>() {
                         @Override
                         public void onResponse(Call<String> call, Response<String> response) {
-                            switchLabelText =  buttonView.isChecked()? "Activando cronjob": "Desactivando cronjob";
+                            switchLabelText =  buttonView.isChecked()? "Cronjob Activado": "Cronjob desactivado";
                             buttonView.setText(switchLabelText);
                             buttonView.setEnabled(true);
                         }

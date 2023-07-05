@@ -43,6 +43,9 @@ public interface Service {
     @GET("/registered_connected")
     Call<ArrayList<String>> getRegisteredConnected();
 
+    @GET("/get_cronjob")
+    Call<String> getCronjob();
+
     @GET("/crontab")
     Call<String> getCrontab();
 
