@@ -66,6 +66,22 @@ public class Network {
         int index = 0;
         String[] segments = hostAddress.split(":");
         for(String segment: segments) {
+
+            // if segment is impair
+            if (segment.length() % 2 == 1) {
+                boolean evaluation = true;
+
+                if ( !Character.isDigit( segment.charAt(0) ) ) {
+                    segment = "0" + segment;
+                    evaluation = false;
+                }
+
+                if ( !Character.isDigit( segment.charAt(2) ) && evaluation ) {
+                    StringBuilder segmentPatch = new StringBuilder(segment);
+                    segment = segmentPatch.insert( (segment.length() -1), 0).toString();
+                }
+            }
+
             if(index == 0) {
                 segment = segment.substring(Math.max(segment.length()-2,0));
             }
