@@ -26,6 +26,20 @@ public class HabitantBoardActivity extends AppCompatActivity
 
         settingsBtn = findViewById(R.id.settingsBtn);
         settingsBtn.setOnClickListener(this);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    Network.keepDeviceConnectedInHome(getApplicationContext());
+                    try {
+                        Thread.sleep(90000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
     }
 
     @Override

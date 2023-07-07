@@ -4,9 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.provider.Settings;
+import android.util.Log;
 
-import com.mazatlab.domotic_app.MainActivity;
 import com.mazatlab.domotic_app.R;
+import com.mazatlab.domotic_app.api.Client;
+import com.mazatlab.domotic_app.api.Service;
+import com.mazatlab.domotic_app.api.json.login.LoginPayload;
 
 import java.math.BigInteger;
 import java.net.InetAddress;
@@ -15,6 +18,10 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Network {
     public final static int RETRY_TIMES = 3;
@@ -121,5 +128,27 @@ public class Network {
         }
 
         return "02:00:00:00:00:00";
+    }
+
+    public static void keepDeviceConnectedInHome(Context context) {
+        Service updateService;
+        LoginPayload loginPayload;
+
+        String apiServerUrl = Network.getApiServerUrl(context.getApplicationContext());
+        String partialMac = Network.getHostAddress(context.getApplicationContext());
+
+        loginPayload = new LoginPayload(partialMac);
+        updateService = Client.getClient(apiServerUrl).create(Service.class);
+
+        Call<String> updateExpirationCall = updateService.putUpdateExpiration(loginPayload);
+        updateExpirationCall.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.d("REQUEST", "Expiration Update");
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {}
+        });
     }
 }
